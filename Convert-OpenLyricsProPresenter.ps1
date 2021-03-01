@@ -5,9 +5,9 @@
 # Variables
 $ccliLicenceText = 'CCLI Licence No. xxxxx'
 $inputFileFilter = '*.xml'
-$inputPath = "$Env:HOMEPATH\Downloads\OpenLPSongs"
+$inputPath = '.\input'
 $logPath = ".\Convert-OpenLyricsProPresenter_$((Get-Date -Format s) -replace ':').txt"
-$outputPath = "$Env:HOMEPATH\Downloads\OpenLPSongs\Output"
+$outputPath = '.\output'
 $removeSongNumberLines = $true
 
 # Import Logging module
