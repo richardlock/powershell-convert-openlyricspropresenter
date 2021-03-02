@@ -5,9 +5,9 @@
 # Variables
 $ccliLicenceText = 'CCLI Licence No. xxxxx'
 $inputFileFilter = '*.xml'
-$inputPath = '.\input'
+$inputPath = ".\input"
 $logPath = ".\Convert-OpenLyricsProPresenter_$((Get-Date -Format s) -replace ':').txt"
-$outputPath = '.\output'
+$outputPath = ".\output"
 $removeSongNumberLines = $true
 
 # Import Logging module
@@ -97,10 +97,11 @@ Get-ChildItem -Path $inputPath -File -Filter $inputFileFilter | ForEach-Object {
         $lyrics = $lyrics -replace "(?ms)^[0-9]+$`n", ""
     }
 
-    # Build output in ProPresenter format
+    # Build output in ProPresenter import format
     $output = $title + "`n`n"
     $output += $lyrics
-    $footer = $author + "`n"
+    $footer = "Copyright`n"
+    $footer += $author + "`n"
     $footer += $copyright + "`n"
     $footer += $ccliLicenceText
     # Remove empty lines from footer
