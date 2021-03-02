@@ -1,6 +1,6 @@
 # PowerShell script to import OpenLyrics xml files from a path, convert to ProPresenter format, and output as text files.
 # Author: Richard Lock
-# Date: 2021-03-01
+# Date: 2021-03-02
 
 # Variables
 $ccliLicenceText = 'CCLI Licence No. xxxxx'
@@ -28,10 +28,12 @@ function Update-VerseName {
     )
     switch -wildcard ($verseName) {
         '' { } # Work with blank verse order
-        'v*' { $verseName -replace 'v','Verse ' }
-        'c*' { $verseName -replace 'c','Chorus ' }
         'b*' { $verseName -replace 'b','Bridge ' }
-        'e*' { $verseName -replace 'e','Ending ' }
+        'c*' { $verseName -replace 'c','Chorus ' }
+        'e*' { $verseName -replace 'e[0-9]','Ending' }
+        'i*' { $verseName -replace 'i[0-9]','Intro' }
+        'p*' { $verseName -replace 'p[0-9]','PreChorus' }
+        'v*' { $verseName -replace 'v','Verse ' }
         default { Write-Log -Level 'ERROR' -Message 'Unrecognised verse name.' }
     }  
 }
@@ -55,20 +57,13 @@ Get-ChildItem -Path $inputPath -File -Filter $inputFileFilter | ForEach-Object {
     }
 
     $author = $inputXml.song.properties.authors.author -join ' | '
+    
     $copyright = $inputXml.song.properties.copyright
 
     # Save space separated verse order as array
     $verseOrder = $inputXml.song.properties.verseOrder -split ' '
-    for ($i = 0; $i -lt $verseOrder.Count; $i++) {
-        # Update verse order verse names to ProPresenter format
-        $verseOrder[$i] = Update-VerseName($verseOrder[$i]) 
-    }
-
-    # Update verse names to ProPresenter format
+    
     $verses = $inputXml.song.lyrics.verse
-    foreach ($verse in $verses) {
-        $verse.name = Update-VerseName($verse.name)
-    }
 
     # Start with empty lyrics string
     $lyrics = ''
@@ -76,7 +71,7 @@ Get-ChildItem -Path $inputPath -File -Filter $inputFileFilter | ForEach-Object {
     # If no verse order is specified, get verse lyrics in order
     if ($verseOrder[0] -eq '') {
         foreach ($verse in $verses) {
-            $lyrics += $verse.name + "`n"
+            $lyrics += (Update-VerseName($verse.name)) + "`n"
             $lyrics += ($verse.lines.'#text' -join "`n") + "`n`n"
        }
     }
@@ -85,7 +80,7 @@ Get-ChildItem -Path $inputPath -File -Filter $inputFileFilter | ForEach-Object {
         foreach ($verseName in $verseorder) {
             foreach ($verse in $verses) {
                 if ($verseName -eq $verse.name) {
-                    $lyrics += $verse.name + "`n"
+                    $lyrics += (Update-VerseName($verse.name)) + "`n"
                     $lyrics += ($verse.lines.'#text' -join "`n") + "`n`n"
                 } 
             }
