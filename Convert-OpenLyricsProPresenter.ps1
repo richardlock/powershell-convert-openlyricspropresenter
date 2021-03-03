@@ -5,9 +5,9 @@
 # Variables
 $ccliLicenceText = 'CCLI Licence No. xxxxx'
 $inputFileFilter = '*.xml'
-$inputPath = ".\input"
+$inputPath = '.\input'
 $logPath = ".\Convert-OpenLyricsProPresenter_$((Get-Date -Format s) -replace ':').txt"
-$outputPath = ".\output"
+$outputPath = '.\output'
 $removeSongNumberLines = $true
 
 # Import Logging module
@@ -42,7 +42,7 @@ function Update-VerseName {
 Get-ChildItem -Path $inputPath -File -Filter $inputFileFilter | ForEach-Object {
     Write-Log -Level 'INFO' -Message "Importing file '$_' ..."
     
-    # Import file as xml object
+    # Import file content as xml object
     try {
         [xml]$inputXml = Get-Content $_
     }
@@ -87,7 +87,7 @@ Get-ChildItem -Path $inputPath -File -Filter $inputFileFilter | ForEach-Object {
         }
     }
 
-    # Remove lines containing just a song number
+    # Remove lyric lines containing just a song number
     if ($removeSongNumberLines) {
         $lyrics = $lyrics -replace "(?ms)^[0-9]+$`n", ""
     }
