@@ -1,9 +1,10 @@
 # PowerShell script to import OpenLyrics xml files from a path, convert to ProPresenter format, and output as text files.
 # Author: Richard Lock
-# Date: 2021-03-02
+# Date: 2021-06-30
 
 # Variables
 $ccliLicenceText = 'CCLI Licence No. xxxxx'
+$includeTitleSlide = $false
 $inputFileFilter = '*.xml'
 $inputPath = '.\input'
 $logPath = ".\Convert-OpenLyricsProPresenter_$((Get-Date -Format s) -replace ':').txt"
@@ -93,7 +94,10 @@ Get-ChildItem -Path $inputPath -File -Filter $inputFileFilter | ForEach-Object {
     }
 
     # Build output in ProPresenter import format
-    $output = $title + "`n`n"
+    $output = ''
+    if ($includeTitleSlide) {
+        $output += $title + "`n`n"
+    }
     $output += $lyrics
     $footer = "Copyright`n"
     $footer += $author + "`n"
